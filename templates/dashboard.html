@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | SmartPlacement{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div>
+        <h1>Welcome, {{ student.name }}</h1>
+        <p>{{ student.course }} · Graduation {{ student.graduation_year }}</p>
+    </div>
+    <div class="profile-pill">CGPA {{ student.cgpa }}</div>
+</div>
+
+<div class="stats">
+    <div class="stat"><strong>{{ jobs|length }}</strong><span>Open Drives</span></div>
+    <div class="stat"><strong>{{ eligible_jobs|length }}</strong><span>Eligible Drives</span></div>
+    <div class="stat"><strong>{{ applications|length }}</strong><span>My Applications</span></div>
+</div>
+
+<section class="card">
+    <h2>Your Profile</h2>
+    <p><strong>Email:</strong> {{ student.email }}</p>
+    <p><strong>Skills:</strong> {{ student.skills or "Not added" }}</p>
+</section>
+
+<section>
+    <h2>Available Placement Drives</h2>
+    <div class="grid">
+    {% for job in jobs %}
+        <article class="job-card">
+            <h3>{{ job.role }}</h3>
+            <p class="company">{{ job.company_name }}</p>
+            <p><strong>{{ job.package_lpa }} LPA</strong></p>
+            <p>Minimum CGPA: {{ job.min_cgpa }}</p>
+            <p>Skills: {{ job.required_skills or "Any" }}</p>
+            <p>Deadline: {{ job.deadline }}</p>
+            {% if job in eligible_jobs %}
+                <span class="badge success">Eligible</span>
+                <form method="post" action="{{ url_for('apply', job_id=job.job_id) }}">
+                    <button type="submit">Apply</button>
+                </form>
+            {% else %}
+                <span class="badge danger">Not eligible</span>
+            {% endif %}
+        </article>
+    {% endfor %}
+    </div>
+</section>
+
+<section class="card">
+    <h2>My Applications</h2>
+    {% if applications %}
+    <table>
+        <tr><th>Company</th><th>Role</th><th>Status</th></tr>
+        {% for item in applications %}
+        <tr>
+            <td>{{ item.company_name }}</td>
+            <td>{{ item.role }}</td>
+            <td><span class="badge">{{ item.status }}</span></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>No applications yet.</p>
+    {% endif %}
+</section>
+{% endblock %}

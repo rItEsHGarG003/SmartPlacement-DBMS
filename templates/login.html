@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Login | SmartPlacement{% endblock %}
+{% block content %}
+<div class="auth-card">
+    <h1>SmartPlacement</h1>
+    <p>Placement Management System</p>
+    <form method="post">
+        <label>Email</label>
+        <input type="email" name="email" required placeholder="you@example.com">
+        <label>Password</label>
+        <input type="password" name="password" required>
+        <button type="submit">Login</button>
+    </form>
+    <p>New student? <a href="{{ url_for('register') }}">Create an account</a></p>
+    <div class="demo-box">
+        <strong>Demo:</strong><br>
+        Student: ritesh@student.com / 1234<br>
+        Admin: admin@smartplacement.com / admin123
+    </div>
+</div>
+{% endblock %}

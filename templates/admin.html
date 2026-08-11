@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Admin | SmartPlacement{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div>
+        <h1>Placement Admin</h1>
+        <p>Manage companies, drives and applications.</p>
+    </div>
+</div>
+
+<div class="stats">
+    <div class="stat"><strong>{{ stats.students }}</strong><span>Students</span></div>
+    <div class="stat"><strong>{{ stats.companies }}</strong><span>Companies</span></div>
+    <div class="stat"><strong>{{ stats.jobs }}</strong><span>Drives</span></div>
+    <div class="stat"><strong>{{ stats.applications }}</strong><span>Applications</span></div>
+    <div class="stat"><strong>{{ stats.selected }}</strong><span>Selected</span></div>
+</div>
+
+<div class="two-col">
+<section class="card">
+    <h2>Add Company</h2>
+    <form method="post" action="{{ url_for('add_company') }}">
+        <input name="name" placeholder="Company name" required>
+        <input name="location" placeholder="Location">
+        <input name="industry" placeholder="Industry">
+        <button type="submit">Add Company</button>
+    </form>
+</section>
+
+<section class="card">
+    <h2>Add Placement Drive</h2>
+    <form method="post" action="{{ url_for('add_job') }}">
+        <select name="company_id" required>
+            {% for company in companies %}
+            <option value="{{ company.company_id }}">{{ company.name }}</option>
+            {% endfor %}
+        </select>
+        <input name="role" placeholder="Job role" required>
+        <input type="number" step="0.1" name="package_lpa" placeholder="Package (LPA)" required>
+        <input type="number" step="0.1" min="0" max="10" name="min_cgpa" placeholder="Minimum CGPA" required>
+        <input name="required_skills" placeholder="Python, SQL">
+        <input type="date" name="deadline" required>
+        <button type="submit">Add Drive</button>
+    </form>
+</section>
+</div>
+
+<section class="card">
+    <h2>Placement Drives</h2>
+    <table>
+        <tr><th>Company</th><th>Role</th><th>Package</th><th>Min CGPA</th><th>Deadline</th></tr>
+        {% for job in jobs %}
+        <tr>
+            <td>{{ job.company_name }}</td>
+            <td>{{ job.role }}</td>
+            <td>{{ job.package_lpa }} LPA</td>
+            <td>{{ job.min_cgpa }}</td>
+            <td>{{ job.deadline }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</section>
+
+<section class="card">
+    <h2>Applications</h2>
+    <table>
+        <tr><th>Student</th><th>Company</th><th>Role</th><th>Status</th><th>Update</th></tr>
+        {% for item in applications %}
+        <tr>
+            <td>{{ item.student_name }}</td>
+            <td>{{ item.company_name }}</td>
+            <td>{{ item.role }}</td>
+            <td>{{ item.status }}</td>
+            <td>
+                <form class="inline-form" method="post"
+                      action="{{ url_for('update_status', application_id=item.application_id) }}">
+                    <select name="status">
+                        {% for status in ['Applied','Shortlisted','Rejected','Selected'] %}
+                        <option value="{{ status }}" {% if status == item.status %}selected{% endif %}>
+                            {{ status }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">Save</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</section>
+{% endblock %}
