@@ -143,4 +143,34 @@ th { background: #f4f6fa; }
     .two-col { grid-template-columns: 1fr; }
     .page-heading { display: block; }
     table { display: block; overflow-x: auto; }
+
+    .job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 15px;
+    }
+
+    .job-header h3 {
+    margin: 0 0 6px;
+    }
+
+    .package-badge {
+    background: #315efb;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    white-space: nowrap;
+    }
+
+    .job-details {
+    margin-bottom: 15px;
+    }
+
+    .job-details p {
+    margin: 7px 0;
+    }
 }

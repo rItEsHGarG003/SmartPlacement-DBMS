@@ -26,12 +26,22 @@
     <div class="grid">
     {% for job in jobs %}
         <article class="job-card">
-            <h3>{{ job.role }}</h3>
-            <p class="company">{{ job.company_name }}</p>
-            <p><strong>{{ job.package_lpa }} LPA</strong></p>
-            <p>Minimum CGPA: {{ job.min_cgpa }}</p>
-            <p>Skills: {{ job.required_skills or "Any" }}</p>
-            <p>Deadline: {{ job.deadline }}</p>
+            <div class="job-header">
+                <div>
+                    <h3>{{ job.role }}</h3>
+                    <p class="company">{{ job.company_name }}</p>
+                </div>
+            
+                <span class="package-badge">
+                    {{ job.package_lpa }} LPA
+                </span>
+            </div>
+
+            <div class="job-details">
+                <p><strong>Minimum CGPA:</strong> {{ job.min_cgpa }}</p>
+                <p><strong>Skills:</strong> {{ job.required_skills or "Any" }}</p>
+                <p><strong>Deadline:</strong> {{ job.deadline }}</p>
+            </div>
             {% if job in eligible_jobs %}
                 <span class="badge success">Eligible</span>
                 <form method="post" action="{{ url_for('apply', job_id=job.job_id) }}">
