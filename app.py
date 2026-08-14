@@ -557,31 +557,70 @@ def admin():
     # STATISTICS
     # ========================================
 
+    total_students = conn.execute(
+        """
+        SELECT COUNT(*)
+        FROM students
+        """
+    ).fetchone()[0]
+
+    total_companies = conn.execute(
+        """
+        SELECT COUNT(*)
+        FROM companies
+        """
+    ).fetchone()[0]
+
+    total_jobs = conn.execute(
+        """
+        SELECT COUNT(*)
+        FROM jobs
+        """
+    ).fetchone()[0]
+
+    total_applications = conn.execute(
+        """
+        SELECT COUNT(*)
+        FROM applications
+        """
+    ).fetchone()[0]
+
+    selected_applications = conn.execute(
+        """
+        SELECT COUNT(*)
+        FROM applications
+        WHERE status = 'Selected'
+        """
+    ).fetchone()[0]
+
+    # Count unique students who have been selected.
+    # This is used for placement percentage.
+    placed_students = conn.execute(
+        """
+        SELECT COUNT(DISTINCT student_id)
+        FROM applications
+        WHERE status = 'Selected'
+        """
+    ).fetchone()[0]
+
+    # Placement percentage:
+    # Number of uniquely placed students / total students * 100
+    if total_students > 0:
+        placement_percentage = round(
+            (placed_students / total_students) * 100,
+            2
+        )
+    else:
+        placement_percentage = 0
+
     stats = {
-
-        "students": conn.execute(
-            "SELECT COUNT(*) FROM students"
-        ).fetchone()[0],
-
-        "companies": conn.execute(
-            "SELECT COUNT(*) FROM companies"
-        ).fetchone()[0],
-
-        "jobs": conn.execute(
-            "SELECT COUNT(*) FROM jobs"
-        ).fetchone()[0],
-
-        "applications": conn.execute(
-            "SELECT COUNT(*) FROM applications"
-        ).fetchone()[0],
-
-        "selected": conn.execute(
-            """
-            SELECT COUNT(*)
-            FROM applications
-            WHERE status = 'Selected'
-            """
-        ).fetchone()[0]
+        "students": total_students,
+        "companies": total_companies,
+        "jobs": total_jobs,
+        "applications": total_applications,
+        "selected": selected_applications,
+        "placed_students": placed_students,
+        "placement_percentage": placement_percentage
     }
 
     # ========================================
@@ -595,6 +634,7 @@ def admin():
             students.name AS student_name,
             companies.name AS company_name,
             jobs.role,
+            applications.applied_at,
             applications.status
         FROM applications
         JOIN students
@@ -626,11 +666,32 @@ def admin():
     jobs = conn.execute(
         """
         SELECT
-            jobs.*,
-            companies.name AS company_name
+            jobs.job_id,
+            jobs.company_id,
+            jobs.role,
+            jobs.package_lpa,
+            jobs.min_cgpa,
+            jobs.deadline,
+            companies.name AS company_name,
+            GROUP_CONCAT(
+                skills.skill_name,
+                ', '
+            ) AS required_skills
         FROM jobs
         JOIN companies
             ON jobs.company_id = companies.company_id
+        LEFT JOIN job_skills
+            ON jobs.job_id = job_skills.job_id
+        LEFT JOIN skills
+            ON job_skills.skill_id = skills.skill_id
+        GROUP BY
+            jobs.job_id,
+            jobs.company_id,
+            jobs.role,
+            jobs.package_lpa,
+            jobs.min_cgpa,
+            jobs.deadline,
+            companies.name
         ORDER BY jobs.deadline
         """
     ).fetchall()
