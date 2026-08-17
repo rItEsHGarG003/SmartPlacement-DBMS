@@ -892,6 +892,48 @@ def apply(job_id):
 
 
 # ============================================
+# STUDENT APPLICATIONS
+# ============================================
+
+@app.route("/applications")
+@login_required
+def applications():
+
+    # Admin should go to admin dashboard
+    if session.get("role") == "admin":
+        return redirect(url_for("admin"))
+
+    conn = get_db()
+
+    # Get applications of the logged-in student
+    applications = conn.execute(
+        """
+        SELECT
+            applications.*,
+            jobs.role,
+            jobs.package_lpa,
+            jobs.deadline,
+            companies.name AS company_name
+        FROM applications
+        JOIN jobs
+            ON applications.job_id = jobs.job_id
+        JOIN companies
+            ON jobs.company_id = companies.company_id
+        WHERE applications.student_id = ?
+        ORDER BY applications.application_id DESC
+        """,
+        (session["user_id"],)
+    ).fetchall()
+
+    conn.close()
+
+    return render_template(
+        "applications.html",
+        applications=applications
+    )
+
+
+# ============================================
 # ADMIN DASHBOARD
 # ============================================
 
