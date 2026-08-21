@@ -147,66 +147,70 @@
 
                 <article class="job-card">
 
-                    <!-- JOB TITLE -->
+                    <!-- JOB HEADER -->
 
-                    <h3>
-                        {{ job.role }}
-                    </h3>
+                    <div class="job-header">
+
+                        <div>
+
+                            <h3>
+                                {{ job.role }}
+                            </h3>
+
+                            <p class="company">
+                                {{ job.company_name }}
+                            </p>
+
+                        </div>
 
 
-                    <!-- COMPANY -->
-
-                    <p class="company">
-                        {{ job.company_name }}
-                    </p>
-
-
-                    <!-- PACKAGE -->
-
-                    <p>
-                        <strong>
+                        <span class="package-badge">
                             {{ job.package_lpa }} LPA
-                        </strong>
-                    </p>
+                        </span>
+
+                    </div>
 
 
-                    <!-- CGPA -->
+                    <!-- JOB DETAILS -->
 
-                    <p>
-                        Minimum CGPA:
-                        {{ job.min_cgpa }}
-                    </p>
+                    <div class="job-details">
 
+                        <p>
+                            <strong>
+                                Minimum CGPA:
+                            </strong>
 
-                    <!-- REQUIRED SKILLS -->
-
-                    <p>
-                        <strong>
-                            Required Skills:
-                        </strong>
-
-                        {% if details.required_skills %}
-
-                            {{ details.required_skills|join(", ") }}
-
-                        {% else %}
-
-                            Any
-
-                        {% endif %}
-
-                    </p>
+                            {{ job.min_cgpa }}
+                        </p>
 
 
-                    <!-- DEADLINE -->
+                        <p>
+                            <strong>
+                                Required Skills:
+                            </strong>
 
-                    <p>
-                        <strong>
-                            Deadline:
-                        </strong>
+                            {% if details.required_skills %}
 
-                        {{ job.deadline }}
-                    </p>
+                                {{ details.required_skills|join(", ") }}
+
+                            {% else %}
+
+                                Any
+
+                            {% endif %}
+
+                        </p>
+
+
+                        <p>
+                            <strong>
+                                Deadline:
+                            </strong>
+
+                            {{ job.deadline }}
+                        </p>
+
+                    </div>
 
 
                     <!-- =================================
@@ -343,6 +347,7 @@
 
         </div>
 
+
     {% else %}
 
         <section class="card">
@@ -449,6 +454,7 @@
             </table>
 
         </div>
+
 
     {% else %}
 
