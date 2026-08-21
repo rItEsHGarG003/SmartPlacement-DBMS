@@ -203,11 +203,18 @@ def home():
     if "user_id" in session:
 
         if session.get("role") == "admin":
-            return redirect(url_for("admin"))
 
-        return redirect(url_for("dashboard"))
+            return redirect(
+                url_for("admin")
+            )
 
-    return redirect(url_for("login"))
+        return redirect(
+            url_for("dashboard")
+        )
+
+    return redirect(
+        url_for("login")
+    )
 
 
 # ============================================
@@ -901,11 +908,14 @@ def applications():
 
     # Admin should go to admin dashboard
     if session.get("role") == "admin":
-        return redirect(url_for("admin"))
+
+        return redirect(
+            url_for("admin")
+        )
 
     conn = get_db()
 
-    # Get applications of the logged-in student
+    # Get applications of logged-in student
     applications = conn.execute(
         """
         SELECT
@@ -930,6 +940,184 @@ def applications():
     return render_template(
         "applications.html",
         applications=applications
+    )
+
+
+# ============================================
+# STUDENT PROFILE
+# ============================================
+
+@app.route("/profile")
+@login_required
+def profile():
+
+    # Admin should go to admin dashboard
+    if session.get("role") == "admin":
+
+        return redirect(
+            url_for("admin")
+        )
+
+    conn = get_db()
+
+    # Get current student
+    student = conn.execute(
+        """
+        SELECT *
+        FROM students
+        WHERE student_id = ?
+        """,
+        (session["user_id"],)
+    ).fetchone()
+
+    if not student:
+
+        conn.close()
+
+        session.clear()
+
+        flash(
+            "Student account not found."
+        )
+
+        return redirect(
+            url_for("login")
+        )
+
+    # Get student's skills
+    student_skills_rows = conn.execute(
+        """
+        SELECT
+            skills.skill_name
+        FROM student_skills
+        JOIN skills
+            ON student_skills.skill_id = skills.skill_id
+        WHERE student_skills.student_id = ?
+        ORDER BY skills.skill_name
+        """,
+        (student["student_id"],)
+    ).fetchall()
+
+    student_skills = [
+        row["skill_name"]
+        for row in student_skills_rows
+    ]
+
+    conn.close()
+
+    return render_template(
+        "profile.html",
+        student=student,
+        student_skills=student_skills
+    )
+
+
+# ============================================
+# UPDATE STUDENT PROFILE
+# ============================================
+
+@app.route(
+    "/profile/update",
+    methods=["POST"]
+)
+@login_required
+def update_profile():
+
+    # Only students can update profile
+    if session.get("role") != "student":
+
+        return redirect(
+            url_for("admin")
+        )
+
+    name = request.form["name"].strip()
+    email = request.form["email"].strip().lower()
+    course = request.form["course"].strip()
+    cgpa = request.form["cgpa"]
+    graduation_year = request.form["graduation_year"]
+    skills_text = request.form["skills"].strip()
+
+    # Basic validation
+    if not name or not email or not course:
+
+        flash(
+            "Name, email and course cannot be empty."
+        )
+
+        return redirect(
+            url_for("profile")
+        )
+
+    try:
+
+        conn = get_db()
+
+        # ========================================
+        # UPDATE STUDENT INFORMATION
+        # ========================================
+
+        conn.execute(
+            """
+            UPDATE students
+            SET
+                name = ?,
+                email = ?,
+                course = ?,
+                cgpa = ?,
+                graduation_year = ?
+            WHERE student_id = ?
+            """,
+            (
+                name,
+                email,
+                course,
+                cgpa,
+                graduation_year,
+                session["user_id"]
+            )
+        )
+
+        # ========================================
+        # UPDATE STUDENT SKILLS
+        # ========================================
+
+        conn.execute(
+            """
+            DELETE FROM student_skills
+            WHERE student_id = ?
+            """,
+            (session["user_id"],)
+        )
+
+        add_student_skills(
+            conn,
+            session["user_id"],
+            skills_text
+        )
+
+        conn.commit()
+        conn.close()
+
+        # Update session name
+        session["user_name"] = name
+
+        flash(
+            "Profile updated successfully."
+        )
+
+    except sqlite3.IntegrityError:
+
+        if "conn" in locals():
+
+            conn.rollback()
+            conn.close()
+
+        flash(
+            "Email already exists or input is invalid."
+        )
+
+    return redirect(
+        url_for("profile")
     )
 
 

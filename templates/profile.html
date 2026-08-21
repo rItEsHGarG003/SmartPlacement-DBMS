@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}Profile | SmartPlacement{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <h1>My Profile</h1>
+        <p>View and update your student information.</p>
+    </div>
+
+    <div class="profile-pill">
+        CGPA {{ student.cgpa }}
+    </div>
+</div>
+
+
+<!-- ============================================
+     PROFILE INFORMATION
+     ============================================ -->
+
+<section class="card">
+
+    <h2>Profile Information</h2>
+
+    <form
+        method="post"
+        action="{{ url_for('update_profile') }}"
+    >
+
+        <label for="name">
+            Name
+        </label>
+
+        <input
+            id="name"
+            type="text"
+            name="name"
+            value="{{ student.name }}"
+            required
+        >
+
+
+        <label for="email">
+            Email
+        </label>
+
+        <input
+            id="email"
+            type="email"
+            name="email"
+            value="{{ student.email }}"
+            required
+        >
+
+
+        <label for="course">
+            Course
+        </label>
+
+        <input
+            id="course"
+            type="text"
+            name="course"
+            value="{{ student.course }}"
+            required
+        >
+
+
+        <label for="cgpa">
+            CGPA
+        </label>
+
+        <input
+            id="cgpa"
+            type="number"
+            name="cgpa"
+            value="{{ student.cgpa }}"
+            step="0.01"
+            min="0"
+            max="10"
+            required
+        >
+
+
+        <label for="graduation_year">
+            Graduation Year
+        </label>
+
+        <input
+            id="graduation_year"
+            type="number"
+            name="graduation_year"
+            value="{{ student.graduation_year }}"
+            required
+        >
+
+
+        <label for="skills">
+            Skills
+        </label>
+
+        <input
+            id="skills"
+            type="text"
+            name="skills"
+            value="{{ student_skills | join(', ') }}"
+            placeholder="Python, SQL, Java"
+        >
+
+        <p>
+            <small>
+                Enter skills separated by commas.
+            </small>
+        </p>
+
+
+        <button type="submit">
+            Update Profile
+        </button>
+
+    </form>
+
+</section>
+
+
+<!-- ============================================
+     CURRENT SKILLS
+     ============================================ -->
+
+<section class="card">
+
+    <h2>Current Skills</h2>
+
+    {% if student_skills %}
+
+        <div>
+
+            {% for skill in student_skills %}
+
+                <span class="badge success">
+                    {{ skill }}
+                </span>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <p>No skills added yet.</p>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}
