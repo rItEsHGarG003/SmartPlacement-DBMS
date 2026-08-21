@@ -7,86 +7,155 @@
 <div class="page-heading">
     <div>
         <h1>My Applications</h1>
-        <p>Track the placement drives you have applied for.</p>
+        <p>Track your placement applications and their current status.</p>
     </div>
 </div>
 
+{% if applications %}
+
 <section class="card">
 
-    {% if applications %}
+    <div class="stats">
 
-        <div class="application-summary">
+        <div class="stat">
             <strong>{{ applications|length }}</strong>
             <span>Total Applications</span>
         </div>
 
-        <div class="application-table-wrapper">
-            <table class="application-table">
-                <thead>
-                    <tr>
-                        <th>Company</th>
-                        <th>Role</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% for application in applications %}
-
-                    <tr>
-                        <td>
-                            <strong>{{ application.company_name }}</strong>
-                        </td>
-
-                        <td>
-                            {{ application.role }}
-                        </td>
-
-                        <td>
-                            {% if application.status == "Selected" %}
-                                <span class="badge success">
-                                    Selected
-                                </span>
-
-                            {% elif application.status == "Rejected" %}
-                                <span class="badge danger">
-                                    Rejected
-                                </span>
-
-                            {% elif application.status == "Shortlisted" %}
-                                <span class="badge shortlisted">
-                                    Shortlisted
-                                </span>
-
-                            {% else %}
-                                <span class="badge">
-                                    {{ application.status }}
-                                </span>
-                            {% endif %}
-                        </td>
-                    </tr>
-
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="stat">
+            <strong>
+                {{ applications|selectattr("status", "equalto", "Selected")|list|length }}
+            </strong>
+            <span>Selected</span>
         </div>
 
-    {% else %}
-
-        <div class="empty-state">
-            <h2>No Applications Yet</h2>
-
-            <p>
-                You have not applied for any placement drive yet.
-            </p>
-
-            <a class="button-link" href="{{ url_for('dashboard') }}">
-                Browse Placement Drives
-            </a>
+        <div class="stat">
+            <strong>
+                {{ applications|selectattr("status", "equalto", "Shortlisted")|list|length }}
+            </strong>
+            <span>Shortlisted</span>
         </div>
 
-    {% endif %}
+        <div class="stat">
+            <strong>
+                {{ applications|selectattr("status", "equalto", "Rejected")|list|length }}
+            </strong>
+            <span>Rejected</span>
+        </div>
+
+    </div>
 
 </section>
+
+
+<section class="card">
+
+    <h2>Application History</h2>
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Company</th>
+                    <th>Role</th>
+                    <th>Package</th>
+                    <th>Deadline</th>
+                    <th>Applied At</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for application in applications %}
+
+                <tr>
+
+                    <td>
+                        <strong>{{ application.company_name }}</strong>
+                    </td>
+
+                    <td>
+                        {{ application.role }}
+                    </td>
+
+                    <td>
+                        {{ application.package_lpa }} LPA
+                    </td>
+
+                    <td>
+                        {{ application.deadline }}
+                    </td>
+
+                    <td>
+                        {{ application.applied_at }}
+                    </td>
+
+                    <td>
+
+                        {% if application.status == "Selected" %}
+
+                            <span class="badge success">
+                                Selected
+                            </span>
+
+                        {% elif application.status == "Rejected" %}
+
+                            <span class="badge danger">
+                                Rejected
+                            </span>
+
+                        {% elif application.status == "Shortlisted" %}
+
+                            <span class="badge">
+                                Shortlisted
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge">
+                                Applied
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+{% else %}
+
+<section class="card">
+
+    <h2>No Applications Yet</h2>
+
+    <p>
+        You have not applied to any placement drive yet.
+    </p>
+
+    <p>
+        Go to your dashboard to view available placement drives and apply
+        for eligible opportunities.
+    </p>
+
+    <form method="get" action="{{ url_for('dashboard') }}">
+        <button type="submit">View Placement Drives</button>
+    </form>
+
+</section>
+
+{% endif %}
 
 {% endblock %}
