@@ -1,5 +1,92 @@
 {% extends "base.html" %}
+
+{% block title %}My Applications | SmartPlacement{% endblock %}
+
 {% block content %}
-<h1>Applications</h1>
-<p>This page is reserved for future expansion.</p>
+
+<div class="page-heading">
+    <div>
+        <h1>My Applications</h1>
+        <p>Track the placement drives you have applied for.</p>
+    </div>
+</div>
+
+<section class="card">
+
+    {% if applications %}
+
+        <div class="application-summary">
+            <strong>{{ applications|length }}</strong>
+            <span>Total Applications</span>
+        </div>
+
+        <div class="application-table-wrapper">
+            <table class="application-table">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for application in applications %}
+
+                    <tr>
+                        <td>
+                            <strong>{{ application.company_name }}</strong>
+                        </td>
+
+                        <td>
+                            {{ application.role }}
+                        </td>
+
+                        <td>
+                            {% if application.status == "Selected" %}
+                                <span class="badge success">
+                                    Selected
+                                </span>
+
+                            {% elif application.status == "Rejected" %}
+                                <span class="badge danger">
+                                    Rejected
+                                </span>
+
+                            {% elif application.status == "Shortlisted" %}
+                                <span class="badge shortlisted">
+                                    Shortlisted
+                                </span>
+
+                            {% else %}
+                                <span class="badge">
+                                    {{ application.status }}
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+            <h2>No Applications Yet</h2>
+
+            <p>
+                You have not applied for any placement drive yet.
+            </p>
+
+            <a class="button-link" href="{{ url_for('dashboard') }}">
+                Browse Placement Drives
+            </a>
+        </div>
+
+    {% endif %}
+
+</section>
+
 {% endblock %}
