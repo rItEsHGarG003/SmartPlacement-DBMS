@@ -2,35 +2,113 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}SmartPlacement{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="SmartPlacement - Smart Student Placement Portal"
+    >
+
+    <title>
+        {% block title %}SmartPlacement{% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
 </head>
+
 <body>
+
+<!-- =====================================================
+     NAVIGATION BAR
+     ===================================================== -->
+
 <header class="navbar">
-    <a class="brand" href="{{ url_for('home') }}">SmartPlacement</a>
+
+    <!-- BRAND -->
+
+    <a
+        class="brand"
+        href="{{ url_for('home') }}"
+    >
+        SmartPlacement
+    </a>
+
+
+    <!-- NAVIGATION -->
+
     {% if session.get('user_id') is not none %}
+
     <nav>
+
         {% if session.get('role') == 'admin' %}
-            <a href="{{ url_for('admin') }}">Admin</a>
+
+            <a href="{{ url_for('admin') }}">
+                Admin Dashboard
+            </a>
+
         {% else %}
-            <a href="{{ url_for('dashboard') }}">Dashboard</a>
-            <a href="{{ url_for('applications') }}">Applications</a>
+
+            <a href="{{ url_for('dashboard') }}">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('applications') }}">
+                Applications
+            </a>
+
         {% endif %}
-        <a href="{{ url_for('logout') }}">Logout</a>
+
+
+        <a href="{{ url_for('logout') }}">
+            Logout
+        </a>
+
     </nav>
+
     {% endif %}
+
 </header>
 
+
+<!-- =====================================================
+     MAIN CONTENT
+     ===================================================== -->
+
 <main class="container">
+
+    <!-- FLASH MESSAGES -->
+
     {% with messages = get_flashed_messages() %}
+
         {% if messages %}
+
             {% for message in messages %}
-                <div class="flash">{{ message }}</div>
+
+                <div class="flash">
+                    {{ message }}
+                </div>
+
             {% endfor %}
+
         {% endif %}
+
     {% endwith %}
-    {% block content %}{% endblock %}
+
+
+    <!-- PAGE CONTENT -->
+
+    {% block content %}
+
+    {% endblock %}
+
 </main>
+
+
 </body>
 </html>

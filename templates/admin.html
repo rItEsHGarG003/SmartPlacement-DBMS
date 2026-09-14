@@ -288,8 +288,32 @@
                 </td>
 
                 <td>
-                    {{ item.status }}
-                </td>
+    {% if item.status == "Selected" %}
+
+        <span class="badge success">
+            Selected
+        </span>
+
+    {% elif item.status == "Rejected" %}
+
+        <span class="badge danger">
+            Rejected
+        </span>
+
+    {% elif item.status == "Shortlisted" %}
+
+        <span class="badge">
+            Shortlisted
+        </span>
+
+    {% else %}
+
+        <span class="badge">
+            Applied
+        </span>
+
+    {% endif %}
+</td>
 
                 <td>
 
