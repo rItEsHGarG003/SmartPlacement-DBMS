@@ -10,10 +10,13 @@
         content="width=device-width, initial-scale=1.0"
     >
 
+    <meta
+        name="description"
+        content="SmartPlacement - Smart Student Placement Portal"
+    >
+
     <title>
-        {% block title %}
-        SmartPlacement
-        {% endblock %}
+        {% block title %}SmartPlacement{% endblock %}
     </title>
 
     <link
@@ -26,7 +29,13 @@
 
 <body>
 
+<!-- =====================================================
+     NAVIGATION BAR
+     ===================================================== -->
+
 <header class="navbar">
+
+    <!-- BRAND -->
 
     <a
         class="brand"
@@ -36,6 +45,8 @@
     </a>
 
 
+    <!-- NAVIGATION -->
+
     {% if session.get('user_id') is not none %}
 
     <nav>
@@ -43,7 +54,7 @@
         {% if session.get('role') == 'admin' %}
 
             <a href="{{ url_for('admin') }}">
-                Admin
+                Admin Dashboard
             </a>
 
         {% else %}
@@ -74,7 +85,13 @@
 </header>
 
 
+<!-- =====================================================
+     MAIN CONTENT
+     ===================================================== -->
+
 <main class="container">
+
+    <!-- FLASH MESSAGES -->
 
     {% with messages = get_flashed_messages() %}
 
@@ -93,7 +110,11 @@
     {% endwith %}
 
 
-    {% block content %}{% endblock %}
+    <!-- PAGE CONTENT -->
+
+    {% block content %}
+
+    {% endblock %}
 
 </main>
 

@@ -5,123 +5,127 @@
 {% block content %}
 
 <!-- ============================================
-     PAGE HEADING
+     DASHBOARD HERO
      ============================================ -->
 
-<div class="page-heading">
+<section class="dashboard-hero">
 
-    <div>
+    <div class="dashboard-hero-content">
 
-        <h1>
-            Welcome, {{ student.name }}
-        </h1>
+        <div>
+            <span class="eyebrow">STUDENT DASHBOARD</span>
 
-        <p>
-            {{ student.course }}
-            ·
-            Graduation {{ student.graduation_year }}
-        </p>
+            <h1>
+                Welcome, {{ student.name }}
+            </h1>
+
+            <p>
+                Discover placement opportunities that match your
+                academic profile and skills.
+            </p>
+        </div>
+
+        <div class="profile-pill">
+            <span>CGPA</span>
+            <strong>{{ student.cgpa }}</strong>
+        </div>
 
     </div>
 
-    <div class="profile-pill">
-        CGPA {{ student.cgpa }}
-    </div>
-
-</div>
+</section>
 
 
 <!-- ============================================
-     STUDENT STATISTICS
+     QUICK STATISTICS
      ============================================ -->
 
-<div class="stats">
+<section class="stats dashboard-stats">
 
     <div class="stat">
-
-        <strong>
-            {{ jobs|length }}
-        </strong>
-
-        <span>
-            Open Drives
-        </span>
-
+        <span class="stat-label">Open Drives</span>
+        <strong>{{ jobs|length }}</strong>
+        <small>Available opportunities</small>
     </div>
-
 
     <div class="stat">
-
-        <strong>
-            {{ eligible_jobs|length }}
-        </strong>
-
-        <span>
-            Eligible Drives
-        </span>
-
+        <span class="stat-label">Eligible Drives</span>
+        <strong>{{ eligible_jobs|length }}</strong>
+        <small>Matching your profile</small>
     </div>
-
 
     <div class="stat">
-
-        <strong>
-            {{ applications|length }}
-        </strong>
-
-        <span>
-            My Applications
-        </span>
-
+        <span class="stat-label">Applications</span>
+        <strong>{{ applications|length }}</strong>
+        <small>Your submitted applications</small>
     </div>
 
-</div>
+</section>
 
 
 <!-- ============================================
-     STUDENT PROFILE
+     PROFILE OVERVIEW
      ============================================ -->
 
-<section class="card">
+<section class="card profile-card">
 
-    <h2>
-        Your Profile
-    </h2>
+    <div class="section-heading">
 
-    <p>
-        <strong>Email:</strong>
-        {{ student.email }}
-    </p>
+        <div>
+            <span class="eyebrow">PROFILE OVERVIEW</span>
+            <h2>Your Profile</h2>
+        </div>
 
-    <p>
-        <strong>Course:</strong>
-        {{ student.course }}
-    </p>
+    </div>
 
-    <p>
-        <strong>Graduation Year:</strong>
-        {{ student.graduation_year }}
-    </p>
+    <div class="profile-grid">
 
-    <p>
-        <strong>CGPA:</strong>
-        {{ student.cgpa }}
-    </p>
+        <div class="profile-item">
+            <span>Email</span>
+            <strong>{{ student.email }}</strong>
+        </div>
 
-    <p>
-        <strong>Skills:</strong>
+        <div class="profile-item">
+            <span>Course</span>
+            <strong>{{ student.course }}</strong>
+        </div>
 
-        {% if student_skills %}
+        <div class="profile-item">
+            <span>Graduation Year</span>
+            <strong>{{ student.graduation_year }}</strong>
+        </div>
 
-            {{ student_skills|join(", ") }}
+        <div class="profile-item">
+            <span>CGPA</span>
+            <strong>{{ student.cgpa }}</strong>
+        </div>
 
-        {% else %}
+        <div class="profile-item profile-skills">
 
-            Not added
+            <span>Skills</span>
 
-        {% endif %}
+            {% if student_skills %}
 
-    </p>
+                <div class="skill-tags">
+
+                    {% for skill in student_skills %}
+                        <span class="skill-tag">
+                            {{ skill }}
+                        </span>
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <strong class="muted">
+                    No skills added
+                </strong>
+
+            {% endif %}
+
+        </div>
+
+    </div>
 
 </section>
 
@@ -130,11 +134,23 @@
      AVAILABLE PLACEMENT DRIVES
      ============================================ -->
 
-<section>
+<section class="placement-section">
 
-    <h2>
-        Available Placement Drives
-    </h2>
+    <div class="section-heading">
+
+        <div>
+            <span class="eyebrow">OPPORTUNITIES</span>
+
+            <h2>
+                Available Placement Drives
+            </h2>
+
+            <p>
+                Explore current opportunities and check your eligibility.
+            </p>
+        </div>
+
+    </div>
 
 
     {% if jobs %}
@@ -151,7 +167,7 @@
 
                     <div class="job-header">
 
-                        <div>
+                        <div class="job-title-area">
 
                             <h3>
                                 {{ job.role }}
@@ -162,7 +178,6 @@
                             </p>
 
                         </div>
-
 
                         <span class="package-badge">
                             {{ job.package_lpa }} LPA
@@ -175,171 +190,184 @@
 
                     <div class="job-details">
 
-                        <p>
+                        <div class="job-detail">
+
+                            <span class="detail-label">
+                                Minimum CGPA
+                            </span>
+
                             <strong>
-                                Minimum CGPA:
+                                {{ job.min_cgpa }}
                             </strong>
 
-                            {{ job.min_cgpa }}
-                        </p>
+                        </div>
 
 
-                        <p>
+                        <div class="job-detail">
+
+                            <span class="detail-label">
+                                Required Skills
+                            </span>
+
                             <strong>
-                                Required Skills:
+
+                                {% if details.required_skills %}
+                                    {{ details.required_skills|join(", ") }}
+                                {% else %}
+                                    Any
+                                {% endif %}
+
                             </strong>
 
-                            {% if details.required_skills %}
-
-                                {{ details.required_skills|join(", ") }}
-
-                            {% else %}
-
-                                Any
-
-                            {% endif %}
-
-                        </p>
+                        </div>
 
 
-                        <p>
+                        <div class="job-detail">
+
+                            <span class="detail-label">
+                                Application Deadline
+                            </span>
+
                             <strong>
-                                Deadline:
+                                {{ job.deadline }}
                             </strong>
 
-                            {{ job.deadline }}
-                        </p>
+                        </div>
 
                     </div>
 
 
-                    <!-- =================================
-                         ELIGIBILITY RESULT
-                         ================================= -->
+                    <!-- ELIGIBILITY -->
 
-                    {% if details.eligible %}
+                    <div class="eligibility-section">
 
-                        <span class="badge success">
-                            Eligible
-                        </span>
+                        {% if details.eligible %}
+
+                            <div class="eligibility-success">
+
+                                <span class="badge success">
+                                    Eligible
+                                </span>
+
+                                <p>
+                                    You meet the eligibility requirements
+                                    for this placement drive.
+                                </p>
+
+                            </div>
 
 
-                        <!-- =================================
-                             APPLICATION STATUS
-                             ================================= -->
+                            <!-- APPLICATION STATUS -->
 
-                        {% if job.job_id in applied_job_ids %}
+                            {% if job.job_id in applied_job_ids %}
 
-                            <span class="badge">
-                                Already Applied
-                            </span>
+                                <div class="application-state">
+
+                                    <span class="badge">
+                                        Already Applied
+                                    </span>
+
+                                    <small>
+                                        Your application has already been submitted.
+                                    </small>
+
+                                </div>
+
+                            {% else %}
+
+                                <form
+                                    method="post"
+                                    action="{{ url_for('apply', job_id=job.job_id) }}"
+                                >
+
+                                    <button
+                                        type="submit"
+                                        class="primary-action"
+                                    >
+                                        Apply Now
+                                    </button>
+
+                                </form>
+
+                            {% endif %}
+
 
                         {% else %}
 
-                            <form
-                                method="post"
-                                action="{{ url_for(
-                                    'apply',
-                                    job_id=job.job_id
-                                ) }}"
-                            >
+                            <div class="eligibility-failed">
 
-                                <button type="submit">
-                                    Apply
-                                </button>
+                                <span class="badge danger">
+                                    Not Eligible
+                                </span>
 
-                            </form>
+                                <p>
+                                    {{ details.reason }}
+                                </p>
 
-                        {% endif %}
+                            </div>
 
 
-                    {% else %}
+                            <!-- MISSING SKILLS -->
 
-                        <span class="badge danger">
-                            Not Eligible
-                        </span>
+                            {% if details.missing_skills %}
 
+                                <div class="eligibility-note">
 
-                        <!-- =================================
-                             REASON FOR NOT ELIGIBLE
-                             ================================= -->
+                                    <strong>
+                                        Missing Skills
+                                    </strong>
 
-                        <p>
+                                    <span>
+                                        {{ details.missing_skills|join(", ") }}
+                                    </span>
 
-                            <strong>
-                                Reason:
-                            </strong>
+                                </div>
 
-                            {{ details.reason }}
-
-                        </p>
+                            {% endif %}
 
 
-                        <!-- =================================
-                             MISSING SKILLS
-                             ================================= -->
+                            <!-- CGPA INFORMATION -->
 
-                        {% if details.missing_skills %}
+                            {% if not details.cgpa_ok %}
 
-                            <p>
+                                <div class="eligibility-note">
 
-                                <strong>
-                                    Missing Skills:
-                                </strong>
+                                    <strong>
+                                        CGPA Requirement
+                                    </strong>
 
-                                {{ details.missing_skills|join(", ") }}
+                                    <span>
+                                        Your CGPA: {{ student.cgpa }}
+                                        ·
+                                        Required: {{ job.min_cgpa }}
+                                    </span>
 
-                            </p>
+                                </div>
 
-                        {% endif %}
+                            {% endif %}
 
 
-                        <!-- =================================
-                             CGPA INFORMATION
-                             ================================= -->
+                            <!-- EXPIRED DRIVE -->
 
-                        {% if not details.cgpa_ok %}
+                            {% if details.deadline_passed %}
 
-                            <p>
+                                <div class="eligibility-note">
 
-                                <strong>
-                                    Your CGPA:
-                                </strong>
+                                    <strong>
+                                        Application Closed
+                                    </strong>
 
-                                {{ student.cgpa }}
+                                    <span>
+                                        The application deadline has passed.
+                                    </span>
 
-                                <br>
+                                </div>
 
-                                <strong>
-                                    Required CGPA:
-                                </strong>
-
-                                {{ job.min_cgpa }}
-
-                            </p>
+                            {% endif %}
 
                         {% endif %}
 
-
-                        <!-- =================================
-                             EXPIRED DRIVE
-                             ================================= -->
-
-                        {% if details.deadline_passed %}
-
-                            <p>
-
-                                <strong>
-                                    Status:
-                                </strong>
-
-                                Application deadline has passed.
-
-                            </p>
-
-                        {% endif %}
-
-                    {% endif %}
+                    </div>
 
                 </article>
 
@@ -350,13 +378,22 @@
 
     {% else %}
 
-        <section class="card">
+        <div class="card empty-state">
+
+            <div class="empty-icon">
+                📋
+            </div>
+
+            <h2>
+                No Placement Drives Available
+            </h2>
 
             <p>
-                No placement drives are currently available.
+                There are currently no placement drives available.
+                Check back later for new opportunities.
             </p>
 
-        </section>
+        </div>
 
     {% endif %}
 
@@ -367,89 +404,126 @@
      MY APPLICATIONS
      ============================================ -->
 
-<section class="card">
+<section class="card applications-section">
 
-    <h2>
-        My Applications
-    </h2>
+    <div class="section-heading">
+
+        <div>
+            <span class="eyebrow">APPLICATION TRACKING</span>
+
+            <h2>
+                My Applications
+            </h2>
+
+            <p>
+                Track the status of your placement applications.
+            </p>
+        </div>
+
+    </div>
 
 
     {% if applications %}
 
-        <div class="table-container">
+        <div class="application-summary">
 
-            <table>
+            <div>
+                <strong>
+                    {{ applications|length }}
+                </strong>
 
-                <tr>
+                <span>
+                    Total Applications
+                </span>
+            </div>
 
-                    <th>
-                        Company
-                    </th>
-
-                    <th>
-                        Role
-                    </th>
-
-                    <th>
-                        Applied At
-                    </th>
-
-                    <th>
-                        Status
-                    </th>
-
-                </tr>
+        </div>
 
 
-                {% for item in applications %}
+        <div class="application-table-wrapper">
+
+            <table class="application-table">
+
+                <thead>
 
                     <tr>
 
-                        <td>
-                            {{ item.company_name }}
-                        </td>
+                        <th>
+                            Company
+                        </th>
 
-                        <td>
-                            {{ item.role }}
-                        </td>
+                        <th>
+                            Role
+                        </th>
 
-                        <td>
-                            {{ item.applied_at }}
-                        </td>
+                        <th>
+                            Applied At
+                        </th>
 
-                        <td>
-
-                            {% if item.status == "Selected" %}
-
-                                <span class="badge success">
-                                    Selected
-                                </span>
-
-                            {% elif item.status == "Rejected" %}
-
-                                <span class="badge danger">
-                                    Rejected
-                                </span>
-
-                            {% elif item.status == "Shortlisted" %}
-
-                                <span class="badge">
-                                    Shortlisted
-                                </span>
-
-                            {% else %}
-
-                                <span class="badge">
-                                    Applied
-                                </span>
-
-                            {% endif %}
-
-                        </td>
+                        <th>
+                            Status
+                        </th>
 
                     </tr>
 
-                {% endfor %}
+                </thead>
+
+
+                <tbody>
+
+                    {% for item in applications %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ item.company_name }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                {{ item.role }}
+                            </td>
+
+                            <td>
+                                {{ item.applied_at }}
+                            </td>
+
+                            <td>
+
+                                {% if item.status == "Selected" %}
+
+                                    <span class="badge success">
+                                        Selected
+                                    </span>
+
+                                {% elif item.status == "Rejected" %}
+
+                                    <span class="badge danger">
+                                        Rejected
+                                    </span>
+
+                                {% elif item.status == "Shortlisted" %}
+
+                                    <span class="badge shortlisted">
+                                        Shortlisted
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge">
+                                        Applied
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
 
             </table>
 
@@ -458,13 +532,33 @@
 
     {% else %}
 
-        <p>
-            No applications yet.
-        </p>
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                🚀
+            </div>
+
+            <h2>
+                No Applications Yet
+            </h2>
+
+            <p>
+                You haven't applied to any placement drives yet.
+                Explore the available opportunities above.
+            </p>
+
+            <a
+                href="#"
+                class="button-link"
+                onclick="window.scrollTo({ top: 0, behavior: 'smooth' }); return false;"
+            >
+                Browse Placement Drives
+            </a>
+
+        </div>
 
     {% endif %}
 
 </section>
-
 
 {% endblock %}
