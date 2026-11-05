@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Company | SmartPlacement{% endblock %}
+
+{% block content %}
+
+<div class="edit-container">
+
+    <h1>Edit Company</h1>
+
+    <p>Update the company details below.</p>
+
+    <form method="post" class="edit-form">
+
+        <label for="name">Company name</label>
+
+        <input
+            id="name"
+            name="name"
+            type="text"
+            maxlength="100"
+            value="{{ company.name }}"
+            required
+        >
+
+        <label for="location">Location</label>
+
+        <input
+            id="location"
+            name="location"
+            type="text"
+            maxlength="100"
+            value="{{ company.location or '' }}"
+        >
+
+        <label for="industry">Industry</label>
+
+        <input
+            id="industry"
+            name="industry"
+            type="text"
+            maxlength="100"
+            value="{{ company.industry or '' }}"
+        >
+
+        <div class="form-actions">
+
+            <button type="submit">Save Changes</button>
+
+            <a class="btn btn-edit" href="{{ url_for('admin') }}">
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}
