@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Placement Drive | SmartPlacement{% endblock %}
+
+{% block content %}
+
+<div class="edit-container">
+
+    <h1>Edit Placement Drive</h1>
+
+    <p>Update the drive details. Existing applications should be preserved.</p>
+
+    <form method="post" class="edit-form">
+
+        <label for="role">Job role</label>
+
+        <input
+            id="role"
+            name="role"
+            type="text"
+            maxlength="100"
+            value="{{ job.role }}"
+            required
+        >
+
+        <label for="package_lpa">Package (LPA)</label>
+
+        <input
+            id="package_lpa"
+            name="package_lpa"
+            type="number"
+            min="0"
+            step="0.01"
+            value="{{ job.package_lpa }}"
+            required
+        >
+
+        <label for="min_cgpa">Minimum CGPA</label>
+
+        <input
+            id="min_cgpa"
+            name="min_cgpa"
+            type="number"
+            min="0"
+            max="10"
+            step="0.01"
+            value="{{ job.min_cgpa }}"
+            required
+        >
+
+        <label for="deadline">Application deadline</label>
+
+        <input
+            id="deadline"
+            name="deadline"
+            type="date"
+            value="{{ job.deadline }}"
+            required
+        >
+
+        <fieldset class="skill-fieldset">
+
+            <legend>Required skills</legend>
+
+            <div class="skills-grid">
+
+                {% for skill in skills %}
+
+                <label class="skill-option">
+
+                    <input
+                        type="checkbox"
+                        name="skill_ids"
+                        value="{{ skill.skill_id }}"
+                        {% if skill.skill_id in selected_skill_ids %}
+                            checked
+                        {% endif %}
+                    >
+
+                    {{ skill.skill_name }}
+
+                </label>
+
+                {% else %}
+
+                <p>No skills available.</p>
+
+                {% endfor %}
+
+            </div>
+
+        </fieldset>
+
+        <div class="form-actions">
+
+            <button type="submit">Save Changes</button>
+
+            <a class="btn btn-edit" href="{{ url_for('admin') }}">
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

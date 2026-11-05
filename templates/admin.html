@@ -11,11 +11,7 @@
     </div>
 </div>
 
-
-<!-- ============================================
-     PLACEMENT STATISTICS
-     ============================================ -->
-
+<!-- PLACEMENT STATISTICS -->
 <div class="stats">
 
     <div class="stat">
@@ -55,77 +51,47 @@
 
 </div>
 
-
-<!-- ============================================
-     ADD COMPANY / ADD PLACEMENT DRIVE
-     ============================================ -->
-
+<!-- ADD COMPANY / ADD PLACEMENT DRIVE -->
 <div class="two-col">
 
-    <!-- ADD COMPANY -->
-
     <section class="card">
-
         <h2>Add Company</h2>
 
         <form method="post" action="{{ url_for('add_company') }}">
 
-            <input
-                name="name"
-                placeholder="Company name"
-                required
-            >
+            <input name="name" placeholder="Company name" required>
 
-            <input
-                name="location"
-                placeholder="Location"
-            >
+            <input name="location" placeholder="Location">
 
-            <input
-                name="industry"
-                placeholder="Industry"
-            >
+            <input name="industry" placeholder="Industry">
 
-            <button type="submit">
-                Add Company
-            </button>
+            <button type="submit">Add Company</button>
 
         </form>
-
     </section>
 
-
-    <!-- ADD PLACEMENT DRIVE -->
-
     <section class="card">
-
         <h2>Add Placement Drive</h2>
 
         <form method="post" action="{{ url_for('add_job') }}">
 
             <select name="company_id" required>
-
                 <option value="" disabled selected>
                     Select Company
                 </option>
 
                 {% for company in companies %}
-
                 <option value="{{ company.company_id }}">
                     {{ company.name }}
                 </option>
-
                 {% endfor %}
-
             </select>
-
 
             <input
                 name="role"
                 placeholder="Job role"
                 required
             >
-
 
             <input
                 type="number"
@@ -135,7 +101,6 @@
                 placeholder="Package (LPA)"
                 required
             >
-
 
             <input
                 type="number"
@@ -147,12 +112,10 @@
                 required
             >
 
-
             <input
                 name="required_skills"
                 placeholder="Python, SQL"
             >
-
 
             <input
                 type="date"
@@ -160,22 +123,71 @@
                 required
             >
 
-
-            <button type="submit">
-                Add Drive
-            </button>
+            <button type="submit">Add Drive</button>
 
         </form>
-
     </section>
 
 </div>
 
+<!-- MANAGE COMPANIES -->
+<section class="card">
 
-<!-- ============================================
-     PLACEMENT DRIVES
-     ============================================ -->
+    <h2>Manage Companies</h2>
 
+    <div class="table-container">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Company</th>
+                    <th>Location</th>
+                    <th>Industry</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for company in companies %}
+                <tr>
+                    <td>{{ company.name }}</td>
+
+                    <td>
+                        {{ company.location or 'Not specified' }}
+                    </td>
+
+                    <td>
+                        {{ company.industry or 'Not specified' }}
+                    </td>
+
+                    <td>
+                        <a
+                            class="btn btn-edit"
+                            href="{{ url_for(
+                                'edit_company',
+                                company_id=company.company_id
+                            ) }}"
+                        >
+                            Edit Company
+                        </a>
+                    </td>
+                </tr>
+
+                {% else %}
+                <tr>
+                    <td colspan="4">No companies available.</td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+
+</section>
+
+<!-- PLACEMENT DRIVES -->
 <section class="card">
 
     <h2>Placement Drives</h2>
@@ -191,28 +203,19 @@
                 <th>Min CGPA</th>
                 <th>Required Skills</th>
                 <th>Deadline</th>
+                <th>Action</th>
             </tr>
-
 
             {% for job in jobs %}
 
             <tr>
+                <td>{{ job.company_name }}</td>
 
-                <td>
-                    {{ job.company_name }}
-                </td>
+                <td>{{ job.role }}</td>
 
-                <td>
-                    {{ job.role }}
-                </td>
+                <td>{{ job.package_lpa }} LPA</td>
 
-                <td>
-                    {{ job.package_lpa }} LPA
-                </td>
-
-                <td>
-                    {{ job.min_cgpa }}
-                </td>
+                <td>{{ job.min_cgpa }}</td>
 
                 <td>
                     {% if job.required_skills %}
@@ -222,20 +225,27 @@
                     {% endif %}
                 </td>
 
-                <td>
-                    {{ job.deadline }}
-                </td>
+                <td>{{ job.deadline }}</td>
 
+                <td>
+                    <a
+                        class="btn btn-edit"
+                        href="{{ url_for(
+                            'edit_job',
+                            job_id=job.job_id
+                        ) }}"
+                    >
+                        Edit Drive
+                    </a>
+                </td>
             </tr>
 
             {% else %}
-
             <tr>
-                <td colspan="6">
+                <td colspan="7">
                     No placement drives available.
                 </td>
             </tr>
-
             {% endfor %}
 
         </table>
@@ -244,11 +254,7 @@
 
 </section>
 
-
-<!-- ============================================
-     APPLICATIONS
-     ============================================ -->
-
+<!-- APPLICATIONS -->
 <section class="card">
 
     <h2>Applications</h2>
@@ -266,57 +272,33 @@
                 <th>Update</th>
             </tr>
 
-
             {% for item in applications %}
 
             <tr>
+                <td>{{ item.student_name }}</td>
+
+                <td>{{ item.company_name }}</td>
+
+                <td>{{ item.role }}</td>
+
+                <td>{{ item.applied_at }}</td>
 
                 <td>
-                    {{ item.student_name }}
+                    {% if item.status == "Selected" %}
+                        <span class="badge success">Selected</span>
+
+                    {% elif item.status == "Rejected" %}
+                        <span class="badge danger">Rejected</span>
+
+                    {% elif item.status == "Shortlisted" %}
+                        <span class="badge">Shortlisted</span>
+
+                    {% else %}
+                        <span class="badge">Applied</span>
+                    {% endif %}
                 </td>
 
                 <td>
-                    {{ item.company_name }}
-                </td>
-
-                <td>
-                    {{ item.role }}
-                </td>
-
-                <td>
-                    {{ item.applied_at }}
-                </td>
-
-                <td>
-    {% if item.status == "Selected" %}
-
-        <span class="badge success">
-            Selected
-        </span>
-
-    {% elif item.status == "Rejected" %}
-
-        <span class="badge danger">
-            Rejected
-        </span>
-
-    {% elif item.status == "Shortlisted" %}
-
-        <span class="badge">
-            Shortlisted
-        </span>
-
-    {% else %}
-
-        <span class="badge">
-            Applied
-        </span>
-
-    {% endif %}
-</td>
-
-                <td>
-
                     <form
                         class="inline-form"
                         method="post"
@@ -348,25 +330,17 @@
 
                         </select>
 
-
-                        <button type="submit">
-                            Save
-                        </button>
+                        <button type="submit">Save</button>
 
                     </form>
-
                 </td>
 
             </tr>
 
             {% else %}
-
             <tr>
-                <td colspan="6">
-                    No applications yet.
-                </td>
+                <td colspan="6">No applications yet.</td>
             </tr>
-
             {% endfor %}
 
         </table>
